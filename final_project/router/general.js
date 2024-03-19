@@ -6,11 +6,20 @@ const public_users = express.Router();
 
 var data = Object.values(books);
 public_users.post("/register", (req,res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-
+    let username = req.body.username;
+    let password = req.body.password;
+    const doesExist = (username)=>{
+        let userswithsamename = users.filter((user)=>{
+          return user.username === username
+        });
+        if(userswithsamename.length > 0){
+          return true;
+        } else {
+          return false;
+        }
+      }
     if(username && password){
-        if(!doesExitst(username)){
+        if(!doesExist(username)){
             users.push({"username":username,"password":password});
             return res.status(200).json({message: "user successfully registered! you can now login"})
         }
