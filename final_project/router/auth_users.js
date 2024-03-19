@@ -4,11 +4,12 @@ let books = require("./booksdb.js");
 const regd_users = express.Router();
 
 let users = [];
+var data = Object.values(books);
 
 const isValid = (username)=>{ 
     if(!username)
     {
-        return true;
+        return false;
     }
     else{
         return true;
@@ -35,12 +36,12 @@ regd_users.post("/login", (req,res) => {
             return res.status(404).json({message: "Error logging in"});
         }
        if (authenticatedUser(username,password)) {
-          let accessToken = jwt.sign({
+          const accessToken = jwt.sign({
             data: password
           }, 'access', { expiresIn: 60 * 60 });
       
           req.session.authorization = {
-            accessToken,username
+            accessToken
         }
         return res.status(200).send("User successfully logged in");
         } else {
@@ -50,8 +51,11 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const isbn = req.params.isbn;
+    const review = req.body.review;
+    //books[isbn].review.user = info;
+    books[isbn].review = review;
+    res.send("the book with the isbn " + isbn + " has a new review");
 });
 
 module.exports.authenticated = regd_users;
